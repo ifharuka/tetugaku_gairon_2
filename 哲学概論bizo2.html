@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哲学概論 カント</title>
+    <style>
+        :root {
+            --primary-color: #0d47a1; /* 濃い青 */
+            --secondary-color: #1976d2; /* 青 */
+            --accent-color: #d32f2f; /* 赤系のアクセント */
+            --background-color: #f5f8fa; /* 薄いグレーがかった背景 */
+            --text-color: #333;
+            --white-color: #ffffff;
+            --marker-yellow: #fffde7;
+            --confirm-green-bg: #e8f5e9;
+            --action-blue-bg: #e3f2fd;
+            --problem-red-bg: #fbe9e7;
+            --confirm-green-text: #2e7d32;
+            --action-blue-text: var(--secondary-color);
+            --problem-red-text: var(--accent-color);
+        }
+
+        body {
+            font-family: 'Yu Gothic UI', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--white-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        .page {
+            border: 1px solid #ddd;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .page-number {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 70px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        .lecturer {
+            font-size: 1.1em;
+            color: var(--secondary-color);
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: var(--primary-color);
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 15px;
+            margin-top: 40px;
+        }
+
+        h3 {
+            font-size: 1.4em;
+            color: var(--secondary-color);
+            border-bottom: 1px dashed var(--secondary-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        p { margin-bottom: 1.2em; }
+        strong, b { color: var(--primary-color); }
+        .marker { background: linear-gradient(transparent 60%, var(--marker-yellow) 60%); }
+        .text-confirm { color: var(--confirm-green-text); font-weight: bold; }
+        .text-action { color: var(--action-blue-text); font-weight: bold; }
+        .text-problem { color: var(--problem-red-text); font-weight: bold; }
+
+        .toc {
+            background-color: #f8fafd;
+            border: 1px solid var(--secondary-color);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        .toc h2 { margin-top: 0; border-left: none; padding-left: 0; border-bottom: 2px solid var(--secondary-color); }
+        .toc ul { list-style-type: none; padding-left: 0; }
+        .toc ul ul { padding-left: 20px; }
+        .toc a { text-decoration: none; color: var(--primary-color); }
+        .toc a:hover { text-decoration: underline; }
+
+        .question-box {
+            border: 2px solid var(--accent-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background-color: var(--problem-red-bg);
+        }
+        .fill-in {
+            font-weight: bold;
+            color: var(--accent-color);
+            border-bottom: 2px dotted var(--accent-color);
+            cursor: pointer;
+            padding: 0 5px;
+            white-space: nowrap;
+        }
+        .answer {
+            display: none;
+            background-color: var(--marker-yellow);
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin: 0 5px;
+            font-weight: normal;
+            color: var(--text-color);
+        }
+        .answer.visible { display: inline-block; }
+
+        .card {
+            background-color: #f9f9f9;
+            border-left: 5px solid var(--primary-color);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .card-header {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em;
+        }
+        th, td { border: 1px solid #ccc; padding: 12px; text-align: left; vertical-align: top; }
+        th { background-color: var(--primary-color); color: var(--white-color); font-weight: bold; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        
+        .footnote { font-size: 0.8em; color: #666; margin-top: 1em; }
+        
+        .diagram-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background-color: #fafafa;
+            text-align: center;
+        }
+        
+        .kant-reason-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .kant-reason-diagram h4 {
+            font-size: 1.3em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .kant-reason-diagram .item {
+            background-color: var(--confirm-green-bg);
+            border: 1px solid var(--confirm-green-text);
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            text-align: left;
+            width: 80%;
+            max-width: 500px;
+        }
+        .kant-reason-diagram .item strong {
+            color: var(--confirm-green-text);
+            display: block;
+            margin-bottom: 5px;
+        }
+        .kant-reason-diagram .arrow {
+            font-size: 2em;
+            color: var(--secondary-color);
+            margin: 5px 0;
+        }
+        .kant-reason-diagram .highlight-box {
+            background-color: var(--marker-yellow);
+            border: 1px solid #ccc;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+        .kant-reason-diagram .footnote-small {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .comparison-diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: stretch;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .comparison-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .box-green {
+            background-color: var(--confirm-green-bg);
+            border: 1px solid var(--confirm-green-text);
+        }
+        .box-orange {
+            background-color: #fff3e0;
+            border: 1px solid #ef6c00;
+        }
+        .comparison-box h4 {
+            margin-top: 0;
+            border-bottom: 2px solid;
+            padding-bottom: 5px;
+        }
+        .box-green h4 { color: var(--confirm-green-text); border-color: var(--confirm-green-text); }
+        .box-orange h4 { color: #ef6c00; border-color: #ef6c00; }
+        .arrow { font-size: 2em; color: var(--text-color); align-self: center; }
+        .comparison-box ul { list-style-position: inside; text-align: left; padding-left: 0;}
+        .comparison-box li { margin-bottom: 0.5em; }
+
+        .references {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+        .references h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+            border-left: none;
+            padding-left: 0;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .page { padding: 1rem; }
+            h1 { font-size: 1.8em; }
+            h2 { font-size: 1.5em; }
+            h3 { font-size: 1.2em; }
+            .comparison-diagram { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>哲学概論 カント</h1>
+        <p class="lecturer">講師：出口 康夫 先生</p>
+        
+        <nav class="toc">
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#chap1">1. カントとは誰か？</a>
+                    <ul>
+                        <li><a href="#sec1_1">1.1 近代哲学の課題とカントの両立方法</a></li>
+                    </ul>
+                </li>
+                <li><a href="#chap2">2. カント的自己：理性と自立性の追求</a>
+                    <ul>
+                        <li><a href="#sec2_1">2.1 機能主義的人間観と自己の捉え方</a></li>
+                    </ul>
+                </li>
+                <li><a href="#chap3">3. カント的自己の分裂と後世への影響</a>
+                    <ul>
+                        <li><a href="#sec3_1">3.1 カントにおける理性の二つの側面</a></li>
+                        <li><a href="#sec3_2">3.2 事実の形と価値の形</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="page">
+            <h2 id="chap1">1. カントとは誰か？</h2>
+            <p>第2回の講義では、18世紀のドイツの哲学者、<b class="text-action">イマヌエル・カント</b>について深掘りします。2024年は彼の生誕300年にあたります。生涯をドイツ北東の隅にあったケーニヒスベルク（現在のロシアの飛び地）で過ごしたカントですが、彼の哲学は、当時の、そして現代の社会に絶大な影響を与えました。</p>
+            <p>私たちは今、カントが思想的な基盤を築いた「近代」そして「現代」という時代に生きています。現代社会を批判的に捉え、より良い未来を構想するためには、その思想的な「製造責任者」とも言えるカントの哲学へと立ち返り、その設計思想を改めて見直すことが不可欠です。</p>
+
+            <h3 id="sec1_1">1.1 近代哲学の課題とカントの両立方法</h3>
+            <p>近代は、科学技術が爆発的に発展した時代です。16〜17世紀に近代科学技術が登場し、社会に深く浸透しました。この科学技術がもたらした世界観は、<b class="text-action">「神なき世界観」「没価値的世界観」</b>、つまり世界は善でも悪でもなく、ただの法則に従って動いているというものです。このような科学は、良い悪いを判断せず、ひたすら「事実」を追求します。</p>
+            <p>一方で、私たちは道徳や美といった「価値」を大切に生きています。近現代は、この<b>「科学技術的な事実の世界」</b>と<b>「価値の有意味性」</b>の両方を手に入れようとした、いわば<b class="text-problem">「欲張りな時代」</b>でした。この二つをどう両立させるか、どう両取りするかが、近現代哲学の大きな課題となったのです。</p>
+            <p>カントは、この難題に対し、<b class="marker">「事実」と「価値」の「棲み分け」</b>という両立方法を提示しました。これは、両者がそれぞれの領域で独立して存在し、衝突しないようにするという戦略です。</p>
+
+            <div class="question-box">
+                <h4>問題1</h4>
+                <p>近代の科学技術がもたらした世界観は、善悪の判断をしない<span class="fill-in" onclick="toggleAnswer(this)">(1)<span class="answer">価値中立的</span></span>な世界観であった。しかし、人間は道徳や美といった<span class="fill-in" onclick="toggleAnswer(this)">(2)<span class="answer">価値</span></span>を大切にしている。カントは、この「事実」の世界と「価値」の有意味性を両立させるために、両者を<span class="fill-in" onclick="toggleAnswer(this)">(3)<span class="answer">棲み分け</span></span>る方法を提示した。</p>
+            </div>
+            <div class="page-number">1</div>
+        </div>
+
+        <div class="page">
+            <h2 id="chap2">2. カント的自己：理性と自立性の追求</h2>
+            <p>では、カント哲学の中心に据えられた「私＝自己」とは、一体どのような存在として捉えられたのでしょうか？ この問いに答える上で、まず前提となるのが「機能主義的人間観」です。</p>
+
+            <h3 id="sec2_1">2.1 機能主義的人間観と自己の捉え方</h3>
+            <p>西洋哲学の長い歴史において、人間はしばしば「様々な機能（能力・できること）の束である」と捉えられてきました。この「束」を構成する個々の機能（例えば、知性、感情、意志など）は哲学者によって様々ですが、人間はその機能の総体として理解されます。</p>
+            <p>そして、「自己」とは、意識や知覚、行為といった様々な活動の<b class="text-action">主体（サブジェクト）</b>、つまり<b class="marker">「〜しているもの」</b>であると共通して考えられてきました。特に近代哲学では、「自己とは私(I)である」という<b class="text-confirm">「自己に関する黄金等式 (Golden Equation)」</b>が広く受け入れられます。</p>
+            <div class="card">
+                <div class="card-header">自己とは「〜しているもの」</div>
+                <ul>
+                    <li><b>意識の主体</b>: 意識しているもの</li>
+                    <li><b>知覚の主体</b>: 見ているもの、目撃しているもの</li>
+                    <li><b>行為の主体</b>: 行為をしているもの</li>
+                    <li><b>人生の主体</b>: 人生の荒波を乗り切っているもの</li>
+                </ul>
+            </div>
+            <p>この機能主義的人間観に立つと、カントにとっての「自己」の正体が見えてきます。それは、人間を構成する能力の束の中で、最も優位で他の能力を（不完全に）コントロールする能力、あるいはその担い手こそが「自己」であるという考え方です。カントは、知・情・意（知性・感情・意志）という人間の主要な能力の中で、特に<b class="text-action">「知」（理性）</b>を最優位の機能と位置づけました。</p>
+            
+            <div class="diagram-box">
+                <h4>カントにおける自己の正体</h4>
+                <div class="kant-reason-diagram">
+                    <div class="item">
+                        <p>人間は様々な機能（能力・できること）の<strong class="text-action">束</strong>である。</p>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="item">
+                        <p>その中でも、他の機能を制御する<strong class="text-action">最有力な機能</strong>が「自己」である。</p>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="item">
+                        <p>カントにとってその最有力な機能は「知・情・意」のうちの<strong class="text-action">知（理性）</strong>である。</p>
+                    </div>
+                    <div class="highlight-box">
+                        <p>カント的自己 = <strong class="text-action">理性</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="page-number">2</div>
+        </div>
+
+        <div class="page">
+            <h2 id="chap3">3. カント的自己の分裂と後世への影響</h2>
+            <p>近現代哲学において玉座に君臨した「私＝自己」。しかし、その支配は永遠ではありませんでした。現代に入ると、その「私＝自己」という存在そのものが、当たり前のものではなくなっていきます。これを<b class="text-problem">「私＝自己」の非自明化</b>と呼びます。</p>
+            
+            <h3 id="sec3_1">3.1 カントにおける理性の二つの側面</h3>
+            <p>カントは、理性が持つ重要な二つの側面を強調しました。一つは<b class="text-action">「知的にできること」</b>、つまりピタゴラスの定理を証明するように、論理的・数学的に物事を理解し、体系化する能力です。もう一つは<b class="text-action">「一人でできること」、すなわち自立性</b>です。これは、人生における重要な決断を他者に依存せず、自らの理性で下す能力を指します。</p>
+            <div class="diagram-box">
+                <h4>カントにおける理性</h4>
+                <div class="kant-reason-diagram">
+                    <div class="item">
+                        <strong>① 知的にできること</strong>
+                        <p>（例：ピタゴラスの定理の証明など）</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="item">
+                        <strong>② 一人でできること（自立性）</strong>
+                        <p>（例：重要なことを一人で決められる）</p>
+                    </div>
+                    <div class="highlight-box">
+                        理性的自己は<strong class="text-action">知的・自立的な「私」</strong>
+                    </div>
+                    <p class="footnote-small">※われわれやそれではない</p>
+                </div>
+            </div>
+
+            <h3 id="sec3_2">3.2 事実の形と価値の形</h3>
+            <p>カントは、世界のすべてを「形」と「中身」に分けました。中身は世界側に元々あるものですが、その「形」は人間、特に人間の理性によって作られると主張しました。さらに、その「形」を二つの側面、すなわち<b class="text-confirm">「事実」の形</b>と<b class="text-confirm">「価値」の形</b>に分けました。</p>
+            <p>この「形」を担当する理性も二つに分かれるとカントは考えました。事実の形を扱うのが<b class="text-action">理論理性</b>であり、価値の形を扱うのが<b class="text-action">実践理性</b>です。</p>
+            <div class="diagram-box">
+                <p style="font-weight: bold; font-size: 1.2em; color: var(--accent-color);">世界の「形」と「中身」</p>
+                <div class="comparison-diagram">
+                    <div class="comparison-box box-green">
+                        <h4>事実</h4>
+                        <ul>
+                            <li>例：ニュートンの万有引力の法則</li>
+                            <li><strong>事実の形</strong>：<br>万有引力の法則などを成り立たせる抽象的なもの（ガリレオ変換など）</li>
+                        </ul>
+                    </div>
+                    <div class="arrow">↔</div>
+                    <div class="comparison-box box-orange">
+                        <h4>価値</h4>
+                        <ul>
+                            <li>例：黄金律：自分自身の嫌なことは人にするな等の道徳法則</li>
+                            <li><strong>価値の形</strong>：<br>道徳法則を成り立たせる定言命法</li>
+                        </ul>
+                    </div>
+                </div>
+                <p><b class="text-action">事実と価値</b>は（そして理論理性と実践理性も）<b class="text-confirm">同じくらい客観的で普遍的</b>である。<br>（※事実がより客観的）</p>
+            </div>
+            <p>カントは、理論理性と実践理性を、それぞれ事実と価値の領域に「棲み分け」させることで、科学的知見と道徳的価値の両立を図ろうとしました。しかし、この棲み分けは、結果として「自己」の内部に二つの独立した領域を生み出し、自己の分裂という問題を引き起こしました。カント自身はこの分裂をある種やむを得ないものと認めましたが、カント以降の哲学者たち、例えばフィヒテ、シェリング、ヘーゲルらは、この分裂した自己をいかに統合するかという課題に取り組むことになります。</p>
+
+            <div class="question-box">
+                <h4>問題2</h4>
+                <p>カントは、理性が持つ機能として、<span class="fill-in" onclick="toggleAnswer(this)">(1)<span class="answer">知的にできること</span></span>と、<span class="fill-in" onclick="toggleAnswer(this)">(2)<span class="answer">一人でできること</span></span>を挙げた。彼はこの理性的自己を<span class="fill-in" onclick="toggleAnswer(this)">(3)<span class="answer">知的・自立的</span></span>な「私」であると捉えた。</p>
+                <p>また、カントは世界の「形」を「事実」の形と「価値」の形に分けた。「事実」の形を扱うのは<span class="fill-in" onclick="toggleAnswer(this)">(4)<span class="answer">理論理性</span></span>であり、「価値」の形を扱うのは<span class="fill-in" onclick="toggleAnswer(this)">(5)<span class="answer">実践理性</span></span>である。</p>
+            </div>
+            <div class="page-number">3</div>
+        </div>
+        
+        <div class="references">
+            <h2>参考文献・リンク</h2>
+            <ul>
+                <li>出口康夫 先生の講義スライド、および動画コンテンツ「哲学概論 カント」を参考に作成。</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function toggleAnswer(element) {
+            const answerSpan = element.querySelector('.answer');
+            if (answerSpan) {
+                answerSpan.classList.toggle('visible');
+            }
+        }
+    </script>
+</body>
+</html>
